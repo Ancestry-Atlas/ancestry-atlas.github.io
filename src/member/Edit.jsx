@@ -6,6 +6,8 @@ import { useForm, useFieldArray } from "react-hook-form";
 import Repeater from "../components/Repeater";
 import api from "../api/endpoints";
 import { useEffect, useState, useMemo } from "react";
+import MembersList from "../components/MembersList";
+import FamilyNamesList from "../components/FamilyNamesList"
 
 export default function () {
   const { register, handleSubmit, control, setValue } = useForm({
@@ -44,16 +46,61 @@ export default function () {
   });
 
   const [rawFamilyNames, setRawFamilyNames] = useState([]);
+  const [rawMembers, setRawMembers] = useState([]);
+
+  const loadFamilyNames = async () => {
+    const data = await api.get_family_names();
+    if (!data.error) {
+      setRawFamilyNames(data);
+    }
+  };
+
+  const loadMembers = async () => {
+    const data = await api.get_members();
+    if (!data.error) {
+      setRawMembers(data);
+    }
+  };
+
+  const deleteFamilyName = async (id) => {
+    // const confirmed = confirm("Are you sure you want to delete this member?");
+    // if (!confirmed) return;
+
+    const result = await api.delete_family_name(id);
+    if (!result.error) {
+      await loadFamilyNames();
+    } else {
+      alert("Failed to delete family name.");
+    }
+  };
+
+  const deleteMember = async (id) => {
+    // const confirmed = confirm("Are you sure you want to delete this member?");
+    // if (!confirmed) return;
+
+    const result = await api.delete_member(id);
+    if (!result.error) {
+      await loadMembers();
+    } else {
+      alert("Failed to delete member.");
+    }
+  };
+
+  const addMember = async (data) => {
+    // const confirmed = confirm("Are you sure you want to delete this member?");
+    // if (!confirmed) return;
+
+    const result = await api.create_member(data);
+    if (!result.error) {
+      await loadMembers();
+    } else {
+      alert("Failed to delete member.");
+    }
+  };
 
   useEffect(() => {
-    const loadFamilyNames = async () => {
-      const data = await api.get_family_names();
-      if (!data.error) {
-        setRawFamilyNames(data);
-      }
-    };
-
     loadFamilyNames();
+    loadMembers();
   }, []);
 
   const familyNames = useMemo(() => {
@@ -66,34 +113,18 @@ export default function () {
     });
   }, [rawFamilyNames]);
 
-  const [rawMembers, setRawMembers] = useState([]);
-
-  useEffect(() => {
-    const loadMembers = async () => {
-      const data = await api.get_members();
-      if (!data.error) {
-        setRawMembers(data);
-      }
-    };
-
-    loadMembers();
-  }, []);
-
   const members = useMemo(() => {
-    // Create a quick lookup map from id to label for family names
     const familyNameMap = rawFamilyNames.reduce((acc, { id, family_name }) => {
       acc[id] = family_name;
       return acc;
     }, {});
 
     return rawMembers.map(({ id, names, family_names }) => {
-      // Split family_names string by comma to get IDs, then map to labels
       const familyNameLabels = (family_names || "")
         .split(",")
         .map((fid) => familyNameMap[fid.trim()])
-        .filter(Boolean); // filter out any invalid IDs
+        .filter(Boolean);
 
-      // names is also comma separated, so split and join with spaces
       const nameParts = (names || "").split(",").map((n) => n.trim());
 
       return {
@@ -104,17 +135,13 @@ export default function () {
     });
   }, [rawMembers, rawFamilyNames]);
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
-
   return (
     <section className="edit">
       <nn-fila>
         <nn-pilar className="form-section">
           <nn-caja padding="1rem" max-width="600px">
             <h1>Add / Edit Member</h1>
-            <form onSubmit={handleSubmit(onSubmit)}>
+            <form onSubmit={handleSubmit(addMember)}>
               <nn-desplazador>
                 <fieldset>
                   <legend>Names</legend>
@@ -223,62 +250,8 @@ export default function () {
             </form>
           </nn-caja>
         </nn-pilar>
-        <nn-pilar className="listing family">
-          <nn-caja padding="1rem" max-width="600px">
-            <h2>Family Names</h2>
-            <nn-desplazador>
-              <ul className="repeater list">
-                {familyNames.map((name) => (
-                  <li key={`${name.id}`}>
-                    <nn-fila>
-                      <nn-pilar size="35px" className="index">
-                        {name.id}
-                      </nn-pilar>
-                      <nn-pilar size="100% - 35px * 3" className="preview">
-                        {name.label}
-                      </nn-pilar>
-                      <nn-pilar size="35px">
-                        <nn-btn color={gColors["shamrock-green"].hex}>E</nn-btn>
-                      </nn-pilar>
-                      <nn-pilar size="35px">
-                        <nn-btn color="#ff5555">X</nn-btn>
-                      </nn-pilar>
-                    </nn-fila>
-                  </li>
-                ))}
-              </ul>
-            </nn-desplazador>
-            <nn-btn color={gColors["sunglow"].hex}>Add Family Name</nn-btn>
-          </nn-caja>
-        </nn-pilar>
-        <nn-pilar className="listing members">
-          <nn-caja padding="1rem" max-width="600px">
-            <h2>Members</h2>
-            <nn-desplazador>
-              <ul className="repeater list">
-                {members.map((member) => (
-                  <li key={`${member.id}`}>
-                    <nn-fila>
-                      <nn-pilar size="35px" className="index">
-                        {member.id}
-                      </nn-pilar>
-                      <nn-pilar size="100% - 35px * 3" className="preview">
-                        {member.label}
-                      </nn-pilar>
-                      <nn-pilar size="35px">
-                        <nn-btn color={gColors["shamrock-green"].hex}>E</nn-btn>
-                      </nn-pilar>
-                      <nn-pilar size="35px">
-                        <nn-btn color="#ff5555">X</nn-btn>
-                      </nn-pilar>
-                    </nn-fila>
-                  </li>
-                ))}
-              </ul>
-            </nn-desplazador>
-            <nn-btn color={gColors["sunglow"].hex}>Add Family Member</nn-btn>
-          </nn-caja>
-        </nn-pilar>
+        <FamilyNamesList familyNames={familyNames} onDelete={deleteFamilyName}  />
+        <MembersList members={members} onDelete={deleteMember}  />
       </nn-fila>
     </section>
   );

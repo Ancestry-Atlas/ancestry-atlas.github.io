@@ -31,6 +31,12 @@ export default {
     makeRequest({ method: "PUT", route: `members/${id}`, data }),
   delete_member: (id) =>
     makeRequest({ method: "DELETE", route: `members/${id}` }),
+
   get_family_names: () => makeRequest({ method: "GET", route: "family_names" }),
-  
+  create_family_name: (data) =>
+    makeRequest({ method: "POST", route: "family_names", data }),
+  update_family_name: (id, data) =>
+    makeRequest({ method: "PUT", route: `family_names/${id}`, data }),
+  delete_family_name: (id) =>
+    makeRequest({ method: "DELETE", route: `family_names/${id}` }),
 };
