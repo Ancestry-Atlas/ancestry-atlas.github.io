@@ -1,6 +1,7 @@
 import 'nano-grid/dist/nanogrid_styles.css'
 import './App.css'
-import EditMember from './member/Edit'
+import EditMembers from './members/Edit'
+import EditFamilyNames from './family-names/Edit'
 
 import Table from './graph/Table'
 import Force3D from './graph/Force3D'
@@ -28,8 +29,12 @@ export default function () {
             element={<RadialClusterTree />}
           />
           <Route
-            path="/member/edit"
-            element={<EditMember />}
+            path="/members/edit"
+            element={<EditMembers />}
+          />
+          <Route
+            path="/family-names/edit"
+            element={<EditFamilyNames />}
           />
         </Routes>
       </Router>

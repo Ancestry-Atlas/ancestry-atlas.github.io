@@ -4,10 +4,10 @@ import "nano-grid/dist/nanogrid.js";
 import gColors from "nano-grid/dist/gcolors.js";
 import { useForm, useFieldArray } from "react-hook-form";
 import Repeater from "../components/Repeater";
-import api from "../api/endpoints";
-import { useEffect, useState, useMemo } from "react";
 import MembersList from "../components/MembersList";
-import FamilyNamesList from "../components/FamilyNamesList"
+import FamilyNamesList from "../components/FamilyNamesList";
+import useFamilyData from "../hooks/useFamilyData";
+import api from "../api/endpoints";
 
 export default function () {
   const { register, handleSubmit, control, setValue } = useForm({
@@ -45,95 +45,31 @@ export default function () {
     name: "parents",
   });
 
-  const [rawFamilyNames, setRawFamilyNames] = useState([]);
-  const [rawMembers, setRawMembers] = useState([]);
+  const { familyNames, members, loadMembers, deleteFamilyName, deleteMember } =
+    useFamilyData();
 
-  const loadFamilyNames = async () => {
-    const data = await api.get_family_names();
-    if (!data.error) {
-      setRawFamilyNames(data);
-    }
-  };
-
-  const loadMembers = async () => {
-    const data = await api.get_members();
-    if (!data.error) {
-      setRawMembers(data);
-    }
-  };
-
-  const deleteFamilyName = async (id) => {
+  const addMember = async (formData) => {
     // const confirmed = confirm("Are you sure you want to delete this member?");
     // if (!confirmed) return;
 
-    const result = await api.delete_family_name(id);
-    if (!result.error) {
-      await loadFamilyNames();
-    } else {
-      alert("Failed to delete family name.");
-    }
-  };
-
-  const deleteMember = async (id) => {
-    // const confirmed = confirm("Are you sure you want to delete this member?");
-    // if (!confirmed) return;
-
-    const result = await api.delete_member(id);
-    if (!result.error) {
-      await loadMembers();
-    } else {
-      alert("Failed to delete member.");
-    }
-  };
-
-  const addMember = async (data) => {
-    // const confirmed = confirm("Are you sure you want to delete this member?");
-    // if (!confirmed) return;
+    const data = {
+      names: formData.names.map((n) => n.value).join(","),
+      family_names: formData.family_names.map((n) => n.value).join(","),
+      preferred_name: formData.preferred_name,
+      nickname: formData.nickname,
+      adopted: formData.adopted,
+      dob: formData.dob,
+      parents: formData.parents.map((n) => n.value).join(","),
+      ignore_family_name: formData.family_names.map((n) => n.ignore).join(","),
+    };
 
     const result = await api.create_member(data);
     if (!result.error) {
       await loadMembers();
     } else {
-      alert("Failed to delete member.");
+      alert("Failed to create member.");
     }
   };
-
-  useEffect(() => {
-    loadFamilyNames();
-    loadMembers();
-  }, []);
-
-  const familyNames = useMemo(() => {
-    return rawFamilyNames.map(({ id, family_name }) => {
-      return {
-        id,
-        value: id,
-        label: family_name,
-      };
-    });
-  }, [rawFamilyNames]);
-
-  const members = useMemo(() => {
-    const familyNameMap = rawFamilyNames.reduce((acc, { id, family_name }) => {
-      acc[id] = family_name;
-      return acc;
-    }, {});
-
-    return rawMembers.map(({ id, names, family_names }) => {
-      const familyNameLabels = (family_names || "")
-        .split(",")
-        .map((fid) => familyNameMap[fid.trim()])
-        .filter(Boolean);
-
-      const nameParts = (names || "").split(",").map((n) => n.trim());
-
-      return {
-        id,
-        value: id,
-        label: [...nameParts, ...familyNameLabels].join(" "),
-      };
-    });
-  }, [rawMembers, rawFamilyNames]);
 
   return (
     <section className="edit">
@@ -167,21 +103,29 @@ export default function () {
                 <fieldset>
                   <label>
                     <span>Prefered Name</span>
-                    <input type="text" {...register("p_name")} />
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      {...register("preferred_name")}
+                    />
                   </label>
                 </fieldset>
 
                 <fieldset>
                   <label>
                     <span>Nickname</span>
-                    <input type="text" {...register("nickname")} />
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      {...register("nickname")}
+                    />
                   </label>
                 </fieldset>
 
                 <fieldset>
                   <label>
                     <span>Date of Birth</span>
-                    <input type="date" {...register("DOB")} />
+                    <input type="date" {...register("dob")} />
                   </label>
                 </fieldset>
 
@@ -250,8 +194,11 @@ export default function () {
             </form>
           </nn-caja>
         </nn-pilar>
-        <FamilyNamesList familyNames={familyNames} onDelete={deleteFamilyName}  />
-        <MembersList members={members} onDelete={deleteMember}  />
+        <FamilyNamesList
+          familyNames={familyNames}
+          onDelete={deleteFamilyName}
+        />
+        <MembersList members={members} onDelete={deleteMember} />
       </nn-fila>
     </section>
   );

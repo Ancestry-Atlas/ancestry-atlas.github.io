@@ -14,7 +14,7 @@ export default function () {
           <Link to="/graph/radial-cluster-tree">Radial Cluster Tree</Link>
         </li>
         <li>
-          <Link to="/member/edit">Add User</Link>
+          <Link to="/members/edit">Manage Members</Link>
         </li>
       </ul>
     </nav>
