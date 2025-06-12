@@ -1,23 +1,23 @@
-"use client";
+'use client'
 
-import "nano-grid/dist/nanogrid.js";
-import gColors from "nano-grid/dist/gcolors.js";
-import { useForm, useFieldArray } from "react-hook-form";
-import Repeater from "../components/Repeater";
-import MembersList from "../components/MembersList";
-import FamilyNamesList from "../components/FamilyNamesList";
-import useFamilyData from "../hooks/useFamilyData";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import 'nano-grid/dist/nanogrid.js'
+import gColors from 'nano-grid/dist/gcolors.js'
+import { useForm, useFieldArray } from 'react-hook-form'
+import Repeater from '../components/Repeater'
+import MembersList from '../components/MembersList'
+import FamilyNamesList from '../components/FamilyNamesList'
+import useFamilyData from '../hooks/useFamilyData'
+import { useParams } from 'react-router-dom'
+import { useEffect } from 'react'
 
 export default function MembersEdit() {
   const { register, handleSubmit, control, setValue, reset } = useForm({
     defaultValues: {
-      names: [{ value: "" }],
-      family_names: [{ value: "" }],
+      names: [{ value: '' }],
+      family_names: [{ value: '' }],
       parents: [{}],
     },
-  });
+  })
 
   const {
     fields: nameFields,
@@ -25,8 +25,8 @@ export default function MembersEdit() {
     remove: removeName,
   } = useFieldArray({
     control,
-    name: "names",
-  });
+    name: 'names',
+  })
 
   const {
     fields: familyNameFields,
@@ -34,8 +34,8 @@ export default function MembersEdit() {
     remove: removeFamilyName,
   } = useFieldArray({
     control,
-    name: "family_names",
-  });
+    name: 'family_names',
+  })
 
   const {
     fields: parentsFields,
@@ -43,8 +43,10 @@ export default function MembersEdit() {
     remove: removeParent,
   } = useFieldArray({
     control,
-    name: "parents",
-  });
+    name: 'parents',
+  })
+
+  const { id } = useParams()
 
   const {
     familyNames,
@@ -53,22 +55,23 @@ export default function MembersEdit() {
     deleteMember,
     editMember,
     addMember,
-  } = useFamilyData({ reset });
-
-  const { id } = useParams();
+  } = useFamilyData({ reset, id })
 
   useEffect(() => {
     if (id) {
-      editMember(id);
+      editMember(id)
     }
-  }, [id]);
+  }, [id])
 
   return (
     <section className="edit">
       <nn-fila>
         <nn-pilar className="form-section">
-          <nn-caja padding="1rem" max-width="600px">
-            <h1>Edit Member</h1>
+          <nn-caja
+            padding="1rem"
+            max-width="600px"
+          >
+            <h1>{id ? 'Edit Member' : 'Add Member'}</h1>
             <form onSubmit={handleSubmit(addMember)}>
               <nn-desplazador>
                 <fieldset>
@@ -84,8 +87,8 @@ export default function MembersEdit() {
                   >
                     <nn-btn
                       type="button"
-                      color={gColors["spanish-green"].hex}
-                      onClick={() => appendName({ value: "" })}
+                      color={gColors['spanish-green'].hex}
+                      onClick={() => appendName({ value: '' })}
                     >
                       + Add Another Name
                     </nn-btn>
@@ -98,7 +101,7 @@ export default function MembersEdit() {
                     <input
                       type="text"
                       autoComplete="off"
-                      {...register("preferred_name")}
+                      {...register('preferred_name')}
                     />
                   </label>
                 </fieldset>
@@ -109,7 +112,7 @@ export default function MembersEdit() {
                     <input
                       type="text"
                       autoComplete="off"
-                      {...register("nickname")}
+                      {...register('nickname')}
                     />
                   </label>
                 </fieldset>
@@ -117,13 +120,19 @@ export default function MembersEdit() {
                 <fieldset>
                   <label>
                     <span>Date of Birth</span>
-                    <input type="date" {...register("dob")} />
+                    <input
+                      type="date"
+                      {...register('dob')}
+                    />
                   </label>
                 </fieldset>
 
                 <fieldset>
                   <label>
-                    <input type="checkbox" {...register("adopted")} />
+                    <input
+                      type="checkbox"
+                      {...register('adopted')}
+                    />
                     <span>Adopted</span>
                   </label>
                 </fieldset>
@@ -143,13 +152,14 @@ export default function MembersEdit() {
                     checkLabel="Ignore this family name"
                     namePrefix="parents"
                     options={members}
+                    control={control}
                     labelProp="full_name"
                     valueProp="id"
                   >
                     <nn-btn
                       type="button"
-                      color={gColors["spanish-green"].hex}
-                      onClick={() => appendParent({ value: "" })}
+                      color={gColors['spanish-green'].hex}
+                      onClick={() => appendParent({ value: '' })}
                     >
                       + Add Another Parent
                     </nn-btn>
@@ -172,16 +182,19 @@ export default function MembersEdit() {
                   >
                     <nn-btn
                       type="button"
-                      color={gColors["spanish-green"].hex}
-                      onClick={() => appendFamilyName({ value: "" })}
+                      color={gColors['spanish-green'].hex}
+                      onClick={() => appendFamilyName({ value: '' })}
                     >
                       + Add Another Family Name
                     </nn-btn>
                   </Repeater>
                 </fieldset>
               </nn-desplazador>
-              <nn-btn type="submit" color={gColors["sunglow"].hex}>
-                Save Member
+              <nn-btn
+                type="submit"
+                color={gColors['sunglow'].hex}
+              >
+                {id ? 'Edit Member' : 'Add Member'}
               </nn-btn>
             </form>
           </nn-caja>
@@ -190,8 +203,11 @@ export default function MembersEdit() {
           familyNames={familyNames}
           onDelete={deleteFamilyName}
         />
-        <MembersList members={members} onDelete={deleteMember} />
+        <MembersList
+          members={members}
+          onDelete={deleteMember}
+        />
       </nn-fila>
     </section>
-  );
+  )
 }
