@@ -1,4 +1,3 @@
-import 'nano-grid/dist/nanogrid.js'
 import gColors from 'nano-grid/dist/gcolors.js'
 import { Link } from 'react-router-dom'
 
@@ -45,7 +44,7 @@ export default function FamilyNamesList({ familyNames, onDelete }) {
             ))}
           </ul>
         </nn-desplazador>
-        <Link to="/family-names/edit">
+        <Link to="/family-names/create">
           <nn-btn color={gColors['sunglow'].hex}>Add Family Name</nn-btn>
         </Link>
       </nn-caja>

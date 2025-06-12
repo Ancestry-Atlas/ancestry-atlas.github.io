@@ -1,9 +1,11 @@
 import { useState, useEffect, useMemo } from 'react'
 import api from '../api/endpoints'
+import { useModal } from '../contexts/ModalContext'
 
 export default function useFamilyData({ reset, id }) {
   const [rawFamilyNames, setRawFamilyNames] = useState([])
   const [rawMembers, setRawMembers] = useState([])
+  const { openModal } = useModal()
 
   const loadFamilyNames = async () => {
     const data = await api.get_family_names()
@@ -11,9 +13,6 @@ export default function useFamilyData({ reset, id }) {
   }
 
   const addFamilyName = async formData => {
-    // const confirmed = confirm("Are you sure you want to delete this member?");
-    // if (!confirmed) return;
-
     const data = {
       family_name: formData.family_name,
     }
@@ -45,9 +44,15 @@ export default function useFamilyData({ reset, id }) {
   }
 
   const deleteFamilyName = async id => {
-    const result = await api.delete_family_name(id)
-    if (!result.error) await loadFamilyNames()
-    else alert('Failed to delete family name.')
+    openModal({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this fanily name?',
+      onSubmit: async () => {
+        const result = await api.delete_family_name(id)
+        if (!result.error) await loadFamilyNames()
+        else alert('Failed to delete family name.')
+      },
+    })
   }
 
   const familyNames = useMemo(() => {
@@ -61,9 +66,6 @@ export default function useFamilyData({ reset, id }) {
   //-------------------------------
 
   const addMember = async formData => {
-    // const confirmed = confirm("Are you sure you want to delete this member?");
-    // if (!confirmed) return;
-
     const data = {
       names: formData.names.map(n => n.value).join(','),
       family_names: formData.family_names.map(n => n.value).join(','),
@@ -135,9 +137,15 @@ export default function useFamilyData({ reset, id }) {
   }
 
   const deleteMember = async id => {
-    const result = await api.delete_member(id)
-    if (!result.error) await loadMembers()
-    else alert('Failed to delete member.')
+    openModal({
+      title: 'Confirm Delete',
+      message: 'Are you sure you want to delete this member?',
+      onSubmit: async () => {
+        const result = await api.delete_member(id)
+        if (!result.error) await loadMembers()
+        else alert('Failed to delete member.')
+      },
+    })
   }
 
   const members = useMemo(() => {

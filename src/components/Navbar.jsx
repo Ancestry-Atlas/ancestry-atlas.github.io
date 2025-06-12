@@ -14,7 +14,7 @@ export default function Navbar() {
           <Link to="/graph/radial-cluster-tree">Radial Cluster Tree</Link>
         </li>
         <li>
-          <Link to="/members/edit">Manage Members</Link>
+          <Link to="/members/create">Manage Members</Link>
         </li>
       </ul>
     </nav>

@@ -1,4 +1,3 @@
-import "nano-grid/dist/nanogrid.js";
 import gColors from "nano-grid/dist/gcolors.js";
 import { Link } from "react-router-dom";
 
@@ -33,7 +32,7 @@ export default function MembersList({ members, onDelete }) {
             ))}
           </ul>
         </nn-desplazador>
-        <Link to="/members/edit">
+        <Link to="/members/create">
           <nn-btn color={gColors["sunglow"].hex}>Add Family Member</nn-btn>
         </Link>
       </nn-caja>
