@@ -6,35 +6,19 @@ import { useForm } from "react-hook-form";
 import MembersList from "../components/MembersList";
 import FamilyNamesList from "../components/FamilyNamesList";
 import useFamilyData from "../hooks/useFamilyData";
-import api from "../api/endpoints";
 
-export default function () {
+export default function FamilyNamesEdit() {
   const { register, handleSubmit, reset } = useForm({});
 
   const {
     familyNames,
     members,
-    loadFamilyNames,
     deleteFamilyName,
     deleteMember,
-  } = useFamilyData();
-
-  const addFamilyName = async (formData) => {
-    // const confirmed = confirm("Are you sure you want to delete this member?");
-    // if (!confirmed) return;
-
-    const data = {
-      family_name: formData.family_name,
-    };
-
-    const result = await api.create_family_name(data);
-    if (!result.error) {
-      await loadFamilyNames();
-      reset();
-    } else {
-      alert("Failed to create family name.");
-    }
-  };
+    editMember,
+    editFamilyName,
+    addFamilyName,
+  } = useFamilyData(reset);
 
   return (
     <section className="edit">
@@ -64,8 +48,13 @@ export default function () {
         <FamilyNamesList
           familyNames={familyNames}
           onDelete={deleteFamilyName}
+          onEdit={editFamilyName}
         />
-        <MembersList members={members} onDelete={deleteMember} />
+        <MembersList
+          members={members}
+          onDelete={deleteMember}
+          onEdit={editMember}
+        />
       </nn-fila>
     </section>
   );

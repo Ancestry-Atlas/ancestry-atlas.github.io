@@ -7,10 +7,9 @@ import Repeater from "../components/Repeater";
 import MembersList from "../components/MembersList";
 import FamilyNamesList from "../components/FamilyNamesList";
 import useFamilyData from "../hooks/useFamilyData";
-import api from "../api/endpoints";
 
-export default function () {
-  const { register, handleSubmit, control, setValue } = useForm({
+export default function MembersEdit() {
+  const { register, handleSubmit, control, setValue, reset } = useForm({
     defaultValues: {
       names: [{ value: "" }],
       family_names: [{ value: "" }],
@@ -45,31 +44,15 @@ export default function () {
     name: "parents",
   });
 
-  const { familyNames, members, loadMembers, deleteFamilyName, deleteMember } =
-    useFamilyData();
-
-  const addMember = async (formData) => {
-    // const confirmed = confirm("Are you sure you want to delete this member?");
-    // if (!confirmed) return;
-
-    const data = {
-      names: formData.names.map((n) => n.value).join(","),
-      family_names: formData.family_names.map((n) => n.value).join(","),
-      preferred_name: formData.preferred_name,
-      nickname: formData.nickname,
-      adopted: formData.adopted,
-      dob: formData.dob,
-      parents: formData.parents.map((n) => n.value).join(","),
-      ignore_family_name: formData.family_names.map((n) => n.ignore).join(","),
-    };
-
-    const result = await api.create_member(data);
-    if (!result.error) {
-      await loadMembers();
-    } else {
-      alert("Failed to create member.");
-    }
-  };
+  const {
+    familyNames,
+    members,
+    deleteFamilyName,
+    deleteMember,
+    editMember,
+    addMember,
+    editFamilyName,
+  } = useFamilyData(reset);
 
   return (
     <section className="edit">
@@ -197,8 +180,13 @@ export default function () {
         <FamilyNamesList
           familyNames={familyNames}
           onDelete={deleteFamilyName}
+          onEdit={editFamilyName}
         />
-        <MembersList members={members} onDelete={deleteMember} />
+        <MembersList
+          members={members}
+          onDelete={deleteMember}
+          onEdit={editMember}
+        />
       </nn-fila>
     </section>
   );

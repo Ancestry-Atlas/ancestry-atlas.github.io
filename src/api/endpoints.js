@@ -25,6 +25,7 @@ async function makeRequest({
 
 export default {
   get_members: () => makeRequest({ method: "GET", route: "members" }),
+  get_member: (id) => makeRequest({ method: "GET", route: `members/${id}` }),
   create_member: (data) =>
     makeRequest({ method: "POST", route: "members", data }),
   update_member: (id, data) =>
@@ -33,6 +34,7 @@ export default {
     makeRequest({ method: "DELETE", route: `members/${id}` }),
 
   get_family_names: () => makeRequest({ method: "GET", route: "family_names" }),
+  get_family_name: (id) => makeRequest({ method: "GET", route: `family_names/${id}` }),
   create_family_name: (data) =>
     makeRequest({ method: "POST", route: "family_names", data }),
   update_family_name: (id, data) =>

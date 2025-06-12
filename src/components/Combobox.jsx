@@ -1,36 +1,34 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 
-export default function ({ name, label, options, register, setValue }) {
-  const [element, setElement] = useState(null)
+export default function Combobox({ name, label, options, register, setValue }) {
+  const [element, setElement] = useState(null);
 
   useEffect(() => {
-    if (!element) return
+    if (!element) return;
 
-    const handler = e => {
-      const value = e.detail.value
-      setValue(name, value, { shouldValidate: true, shouldDirty: true })
+    const currentValue = register(name).value;
+    if (currentValue) {
+      element.value = currentValue;
     }
 
-    element.addEventListener('select', handler)
-    return () => element.removeEventListener('select', handler)
-  }, [element, name, setValue])
+    const handler = (e) => {
+      const value = e.detail.value;
+      setValue(name, value, { shouldValidate: true, shouldDirty: true });
+    };
+
+    element.addEventListener("select", handler);
+    return () => element.removeEventListener("select", handler);
+  }, [element, name, register, setValue]);
 
   return (
-    <nn-combobox
-      ref={setElement}
-      label={label}
-      name={name}
-    >
+    <nn-combobox ref={setElement} label={label} name={name}>
       <ul>
-        {options.map(opt => (
-          <li
-            key={opt.value}
-            data-value={opt.value}
-          >
+        {options.map((opt) => (
+          <li key={opt.value} data-value={opt.value}>
             {opt.label}
           </li>
         ))}
       </ul>
     </nn-combobox>
-  )
+  );
 }
