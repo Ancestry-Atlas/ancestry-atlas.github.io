@@ -13,7 +13,7 @@ export default function MembersEdit() {
     defaultValues: {
       names: [{ value: "" }],
       family_names: [{ value: "" }],
-      parents: [{ value: "" }],
+      parents: [{  }],
     },
   });
 
@@ -52,7 +52,7 @@ export default function MembersEdit() {
     editMember,
     addMember,
     editFamilyName,
-  } = useFamilyData(reset);
+  } = useFamilyData({ reset });
 
   return (
     <section className="edit">

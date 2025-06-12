@@ -1,52 +1,42 @@
-import Combobox from './Combobox'
-
-export default function ({
+export default function Repeater({
   fields,
   remove,
   register,
-  setValue,
   namePrefix,
   options = null,
   children,
   check,
   checkLabel,
 }) {
+  const computedOptions = [{ value: null, label: "Nothing" }, options]?.flat();
   return (
     <>
       <ul className="repeater">
         {fields.map((field, index) => {
-          const isOnlyChild = fields.length === 1
-          const name = `${namePrefix}.${index}.value`
-          const inputSize = isOnlyChild ? '100%' : '100% - 35px * 2'
+          const isOnlyChild = fields.length === 1;
+          const name = `${namePrefix}.${index}.value`;
+          const inputSize = isOnlyChild ? "100%" : "100% - 35px * 2";
 
           return (
             <li key={`${namePrefix}${index}${field.id}`}>
               <nn-fila>
                 {!isOnlyChild && (
-                  <nn-pilar
-                    size="35px"
-                    className="index"
-                  >
+                  <nn-pilar size="35px" className="index">
                     {index + 1}
                   </nn-pilar>
                 )}
 
                 <nn-pilar size={inputSize}>
                   {options ? (
-                    <Combobox
-                      name={name}
-                      label="Select an option"
-                      setValue={setValue}
-                      register={register}
-                      options={options}
-                    ></Combobox>
+                    <select {...register(name, {})}>
+                      {computedOptions.map((opt) => (
+                        <option key={opt.value} value={opt.value}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
                   ) : (
-                    <input
-                      autoComplete="off"
-                      {...register(name, {
-                        // required: true,
-                      })}
-                    />
+                    <input autoComplete="off" {...register(name, {})} />
                   )}
                 </nn-pilar>
 
@@ -67,20 +57,21 @@ export default function ({
                     <label>
                       <input
                         type="checkbox"
-                        {...register(`${namePrefix}.${index}.ignore`, {
-                          // required: true,
-                        })}
+                        {...register(`${namePrefix}.${index}.ignore`, {})}
+                        checked={field.value || false}
+                        onChange={(e) => field.onChange(e.target.checked)}
                       />
+
                       <span>{checkLabel}</span>
                     </label>
                   </nn-pilar>
                 )}
               </nn-fila>
             </li>
-          )
+          );
         })}
       </ul>
       {children}
     </>
-  )
+  );
 }

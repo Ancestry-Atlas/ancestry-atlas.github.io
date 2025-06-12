@@ -18,7 +18,7 @@ export default function FamilyNamesEdit() {
     editMember,
     editFamilyName,
     addFamilyName,
-  } = useFamilyData(reset);
+  } = useFamilyData({ reset });
 
   return (
     <section className="edit">

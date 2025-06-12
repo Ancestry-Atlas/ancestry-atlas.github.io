@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import api from "../api/endpoints";
 
-export default function useFamilyData(reset) {
+export default function useFamilyData({ reset }) {
   const [rawFamilyNames, setRawFamilyNames] = useState([]);
   const [rawMembers, setRawMembers] = useState([]);
 
@@ -58,8 +58,6 @@ export default function useFamilyData(reset) {
     // const confirmed = confirm("Are you sure you want to delete this member?");
     // if (!confirmed) return;
 
-    console.log(formData)
-
     const data = {
       names: formData.names.map((n) => n.value).join(","),
       family_names: formData.family_names.map((n) => n.value).join(","),
@@ -68,7 +66,9 @@ export default function useFamilyData(reset) {
       adopted: formData.adopted,
       dob: formData.dob,
       parents: formData.parents.map((n) => n.value).join(","),
-      ignore_family_name: formData.family_names.map((n) => n.ignore).join(","),
+      ignore_family_name: formData.parents
+        .map((n) => (n.ignore ? n.value : null))
+        .join(","),
     };
 
     const result = await api.create_member(data);
@@ -103,7 +103,7 @@ export default function useFamilyData(reset) {
         preferred_name: member.preferred_name || "",
         nickname: member.nickname || "",
         adopted: !!member.adopted,
-        dob: member?.dob.split('T')[0] || "",
+        dob: member?.dob?.split("T")[0] || "",
         parents: (member.parents || "")
           .split(",")
           .filter(Boolean)
@@ -112,13 +112,6 @@ export default function useFamilyData(reset) {
             ignore: ignoreFlags[i] || false,
           })),
       });
-      console.log('p', (member.parents || "")
-          .split(",")
-          .filter(Boolean)
-          .map((n, i) => ({
-            value: n,
-            ignore: ignoreFlags[i] || false,
-          })),)
     } else {
       alert("Failed to create family name.");
     }
