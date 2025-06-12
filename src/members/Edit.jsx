@@ -7,13 +7,15 @@ import Repeater from "../components/Repeater";
 import MembersList from "../components/MembersList";
 import FamilyNamesList from "../components/FamilyNamesList";
 import useFamilyData from "../hooks/useFamilyData";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function MembersEdit() {
   const { register, handleSubmit, control, setValue, reset } = useForm({
     defaultValues: {
       names: [{ value: "" }],
       family_names: [{ value: "" }],
-      parents: [{  }],
+      parents: [{}],
     },
   });
 
@@ -51,15 +53,22 @@ export default function MembersEdit() {
     deleteMember,
     editMember,
     addMember,
-    editFamilyName,
   } = useFamilyData({ reset });
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      editMember(id);
+    }
+  }, [id]);
 
   return (
     <section className="edit">
       <nn-fila>
         <nn-pilar className="form-section">
           <nn-caja padding="1rem" max-width="600px">
-            <h1>Add / Edit Member</h1>
+            <h1>Edit Member</h1>
             <form onSubmit={handleSubmit(addMember)}>
               <nn-desplazador>
                 <fieldset>
@@ -172,7 +181,7 @@ export default function MembersEdit() {
                 </fieldset>
               </nn-desplazador>
               <nn-btn type="submit" color={gColors["sunglow"].hex}>
-                Add/Edit Member
+                Save Member
               </nn-btn>
             </form>
           </nn-caja>
@@ -180,13 +189,8 @@ export default function MembersEdit() {
         <FamilyNamesList
           familyNames={familyNames}
           onDelete={deleteFamilyName}
-          onEdit={editFamilyName}
         />
-        <MembersList
-          members={members}
-          onDelete={deleteMember}
-          onEdit={editMember}
-        />
+        <MembersList members={members} onDelete={deleteMember} />
       </nn-fila>
     </section>
   );

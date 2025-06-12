@@ -6,6 +6,8 @@ import { useForm } from "react-hook-form";
 import MembersList from "../components/MembersList";
 import FamilyNamesList from "../components/FamilyNamesList";
 import useFamilyData from "../hooks/useFamilyData";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function FamilyNamesEdit() {
   const { register, handleSubmit, reset } = useForm({});
@@ -15,17 +17,24 @@ export default function FamilyNamesEdit() {
     members,
     deleteFamilyName,
     deleteMember,
-    editMember,
     editFamilyName,
     addFamilyName,
   } = useFamilyData({ reset });
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    if (id) {
+      editFamilyName(id);
+    }
+  }, [id]);
 
   return (
     <section className="edit">
       <nn-fila>
         <nn-pilar className="form-section">
           <nn-caja padding="1rem" max-width="600px">
-            <h1>Add / Edit Family Name</h1>
+            <h1>Edit Family Name</h1>
             <form onSubmit={handleSubmit(addFamilyName)}>
               <nn-desplazador>
                 <fieldset>
@@ -40,7 +49,7 @@ export default function FamilyNamesEdit() {
                 </fieldset>
               </nn-desplazador>
               <nn-btn type="submit" color={gColors["sunglow"].hex}>
-                Add/Edit Family Name
+                Save Family Name
               </nn-btn>
             </form>
           </nn-caja>
@@ -48,13 +57,8 @@ export default function FamilyNamesEdit() {
         <FamilyNamesList
           familyNames={familyNames}
           onDelete={deleteFamilyName}
-          onEdit={editFamilyName}
         />
-        <MembersList
-          members={members}
-          onDelete={deleteMember}
-          onEdit={editMember}
-        />
+        <MembersList members={members} onDelete={deleteMember} />
       </nn-fila>
     </section>
   );

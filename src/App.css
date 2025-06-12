@@ -11,7 +11,7 @@ body {
   margin: 0;
   color: var(--color-foreground);
   background-color: #202028;
-  font-family: 'Montserrat', Helvetica, Arial, sans-serif;
+  font-family: "Montserrat", Helvetica, Arial, sans-serif;
   color-scheme: dark;
 }
 
@@ -51,8 +51,8 @@ form {
   }
 
   label {
-    &:has([type='radio']),
-    &:has([type='checkbox']) {
+    &:has([type="radio"]),
+    &:has([type="checkbox"]) {
       flex-direction: row;
       gap: var(--space-between-inline-items);
       align-items: baseline;
@@ -75,7 +75,7 @@ form {
     width: 100%;
   }
 
-  input:not([type='checkbox']),
+  input:not([type="checkbox"]),
   select {
     min-height: 35px;
     border: 0;

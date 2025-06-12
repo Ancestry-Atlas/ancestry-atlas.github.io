@@ -2,7 +2,7 @@ import "nano-grid/dist/nanogrid.js";
 import gColors from "nano-grid/dist/gcolors.js";
 import { Link } from "react-router-dom";
 
-export default function MembersList({ members, onDelete, onEdit }) {
+export default function MembersList({ members, onDelete }) {
   return (
     <nn-pilar className="listing members">
       <nn-caja padding="1rem" max-width="600px">
@@ -19,12 +19,9 @@ export default function MembersList({ members, onDelete, onEdit }) {
                     {member.label}
                   </nn-pilar>
                   <nn-pilar size="35px">
-                    <nn-btn
-                      color={gColors["shamrock-green"].hex}
-                      onClick={() => onEdit(member.id)}
-                    >
-                      E
-                    </nn-btn>
+                    <Link to={`/members/edit/${member.id}`}>
+                      <nn-btn color={gColors["shamrock-green"].hex}>E</nn-btn>
+                    </Link>
                   </nn-pilar>
                   <nn-pilar size="35px">
                     <nn-btn color="#ff5555" onClick={() => onDelete(member.id)}>

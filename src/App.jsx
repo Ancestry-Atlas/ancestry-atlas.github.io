@@ -22,8 +22,8 @@ export default function App() {
             path="/graph/radial-cluster-tree"
             element={<RadialClusterTree />}
           />
-          <Route path="/members/edit" element={<EditMembers />} />
-          <Route path="/family-names/edit" element={<EditFamilyNames />} />
+          <Route path="/members/edit/:id?" element={<EditMembers />} />
+          <Route path="/family-names/edit/:id?" element={<EditFamilyNames />} />
         </Routes>
       </Router>
     </>
