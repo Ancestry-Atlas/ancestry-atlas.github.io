@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo } from 'react'
 import api from '../api/endpoints'
 import { useModal } from '../contexts/ModalContext'
-import { getPersonWithFamilyNames } from '../utils/manageFamilyData'
+import { getPersonWithFamilyNames } from '../utils/getPersonWithFamilyNames'
 
-export default function useFamilyData({ reset, id }) {
+export default function useFamilyData({ reset, id } = {}) {
   const [rawFamilyNames, setRawFamilyNames] = useState([])
   const [rawMembers, setRawMembers] = useState([])
   const { openModal } = useModal()

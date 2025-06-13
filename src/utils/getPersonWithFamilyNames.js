@@ -53,6 +53,9 @@ export function getPersonWithFamilyNames({
   return {
     id: personId,
     name: person?.names?.replace(/,/g, ' ') ?? null,
+    nickname: person?.nickname,
+    parents: person?.parents,
+    preferred_name: person?.preferred_name,
     familyNames: extractFamilyNames(personId),
   }
 }

@@ -1,24 +1,33 @@
 import { useEffect, useRef } from 'react'
 import * as d3 from 'd3'
-
-const data = {
-  name: 'Root',
-  children: [
-    {
-      name: 'Child A',
-      children: [{ name: 'A1' }, { name: 'A2' }],
-    },
-    {
-      name: 'Child B',
-      children: [{ name: 'B1' }],
-    },
-  ],
-}
+import useFamilyData from '../hooks/useFamilyData'
+import buildFamilyTree from '../utils/buildFamilyTree'
 
 export default function RadialTree() {
   const ref = useRef()
 
+  const { persons } = useFamilyData()
+
   useEffect(() => {
+    if (!persons || persons.length === 0) return
+
+    const personsData = persons.map(
+      ({ id, name, familyNames, preferred_name, nickname, parents }) => {
+        const newName = preferred_name ? preferred_name : name
+        return {
+          id,
+          name: [newName, familyNames[0], familyNames[1]].join(' '),
+          parents,
+          nickname,
+        }
+      }
+    )
+
+    const data = buildFamilyTree(personsData)
+
+    console.log(personsData)
+    console.log('tree:', data)
+
     const width = 500
     const radius = width / 2
 
@@ -77,7 +86,7 @@ export default function RadialTree() {
       .clone(true)
       .lower()
       .attr('stroke', 'white')
-  }, [])
+  }, [persons])
 
   return (
     <svg
