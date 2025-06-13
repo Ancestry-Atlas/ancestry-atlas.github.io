@@ -1,55 +1,58 @@
-export function getPersonWithFamilyNames({ personId, members, familyNamesMap }) {
+export function getPersonWithFamilyNames({
+  personId,
+  members,
+  familyNamesMap,
+}) {
   if (!personId || !members || !familyNamesMap) return null
 
   const visited = new Set()
-  const addedNames = new Set() // Track actual family name strings (not IDs)
-  const result = {
-    id: personId,
-    name: null,
-    familyNames: [],
-  }
+  const getPerson = id => members.find(m => m.id === Number(id))
 
-  function resolveFamilyNames(id) {
-    if (visited.has(id)) return
+  function extractFamilyNames(id) {
+    if (!id || visited.has(id)) return []
     visited.add(id)
 
-    const person = members.find(m => m.id === id)
-    if (!person) return
-
-    if (result.name === null) {
-      result.name = person.names
-    }
-
-    // First recursively resolve parents
-    const parentIds = (person.parents || '')
-      .split(',')
-      .map(s => s.trim())
-      .filter(pid => pid !== 'Nothing' && pid !== '' && !isNaN(pid))
-
-    parentIds.forEach(pid => resolveFamilyNames(Number(pid)))
-
-    // Then handle this person's family names
-    const rawFamilyIds = (person.family_names || '')
-      .split(',')
-      .map(s => s.trim())
-      .filter(Boolean)
+    const person = getPerson(id)
+    if (!person) return []
 
     const ignore = (person.ignore_family_name || '')
       .split(',')
       .map(s => s.trim())
 
-    rawFamilyIds.forEach(fid => {
-      if (!ignore.includes(fid)) {
-        const fname = familyNamesMap[fid]
-        if (fname && !addedNames.has(fname)) {
-          result.familyNames.push(fname)
-          addedNames.add(fname)
-        }
-      }
-    })
+    const rawFamilyIds = (person.family_names || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(fid => fid && !ignore.includes(fid))
+
+    const direct = rawFamilyIds.map(fid => familyNamesMap[fid]).filter(Boolean)
+
+    // Recursively extract parent family names
+    const [p1, p2] = (person.parents || '')
+      .split(',')
+      .map(s => s.trim())
+      .filter(pid => pid && pid !== 'Nothing' && !isNaN(pid))
+
+    const p1Names = p1 ? extractFamilyNames(p1) : []
+    const p2Names = p2 ? extractFamilyNames(p2) : []
+
+    return interleave(p1Names, p2Names).concat(direct)
   }
 
-  resolveFamilyNames(personId)
+  function interleave(a, b) {
+    const maxLen = Math.max(a.length, b.length)
+    const result = []
+    for (let i = 0; i < maxLen; i++) {
+      if (a[i]) result.push(a[i])
+      if (b[i]) result.push(b[i])
+    }
+    return result
+  }
 
-  return result
+  const person = getPerson(personId)
+
+  return {
+    id: personId,
+    name: person?.names?.replace(/,/g, ' ') ?? null,
+    familyNames: extractFamilyNames(personId),
+  }
 }
