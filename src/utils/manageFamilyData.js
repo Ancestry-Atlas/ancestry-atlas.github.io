@@ -42,8 +42,8 @@ export function getPersonWithFamilyNames({
     const maxLen = Math.max(a.length, b.length)
     const result = []
     for (let i = 0; i < maxLen; i++) {
-      if (a[i]) result.push(a[i])
-      if (b[i]) result.push(b[i])
+      result.push(a[i] || '(?)')
+      result.push(b[i] || '(?)')
     }
     return result
   }
