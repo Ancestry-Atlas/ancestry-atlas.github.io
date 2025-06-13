@@ -26,12 +26,18 @@ export default function FamilyNamesList({ familyNames, onDelete }) {
                   >
                     {name.label}
                   </nn-pilar>
-                  <nn-pilar size="35px">
-                    <Link to={`/family-names/edit/${name.id}`}>
-                      <nn-btn color={gColors['shamrock-green'].hex}>E</nn-btn>
-                    </Link>
+                  <nn-pilar
+                    size="35px"
+                    className="controls"
+                  >
+                    <nn-btn color={gColors['shamrock-green'].hex}>
+                      <Link to={`/family-names/edit/${name.id}`}>E</Link>
+                    </nn-btn>
                   </nn-pilar>
-                  <nn-pilar size="35px">
+                  <nn-pilar
+                    size="35px"
+                    className="controls"
+                  >
                     <nn-btn
                       color="#ff5555"
                       onClick={() => onDelete(name.id)}

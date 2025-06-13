@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from 'react'
 import api from '../api/endpoints'
 import { useModal } from '../contexts/ModalContext'
+import { getPersonWithFamilyNames } from '../utils/manageFamilyData'
 
 export default function useFamilyData({ reset, id }) {
   const [rawFamilyNames, setRawFamilyNames] = useState([])
@@ -148,16 +149,18 @@ export default function useFamilyData({ reset, id }) {
     })
   }
 
-  const members = useMemo(() => {
-    const familyNameMap = rawFamilyNames.reduce((acc, { id, family_name }) => {
+  const familyNamesMap = useMemo(() => {
+    return rawFamilyNames.reduce((acc, { id, family_name }) => {
       acc[id] = family_name
       return acc
     }, {})
+  }, [rawFamilyNames])
 
+  const members = useMemo(() => {
     return rawMembers.map(({ id, names, family_names }) => {
       const familyNameLabels = (family_names || '')
         .split(',')
-        .map(fid => familyNameMap[fid.trim()])
+        .map(fid => familyNamesMap[fid.trim()])
         .filter(Boolean)
       const nameParts = (names || '').split(',').map(n => n.trim())
       return {
@@ -166,7 +169,21 @@ export default function useFamilyData({ reset, id }) {
         label: [...nameParts, ...familyNameLabels].join(' '),
       }
     })
-  }, [rawMembers, rawFamilyNames])
+  }, [rawMembers, familyNamesMap])
+
+  const persons = useMemo(() => {
+    if (!rawMembers.length || !rawFamilyNames.length) return []
+
+    return rawMembers
+      .map(member =>
+        getPersonWithFamilyNames({
+          personId: member.id,
+          members: rawMembers,
+          familyNamesMap,
+        })
+      )
+      .filter(Boolean)
+  }, [rawMembers, rawFamilyNames, familyNamesMap])
 
   useEffect(() => {
     loadFamilyNames()
@@ -178,6 +195,7 @@ export default function useFamilyData({ reset, id }) {
     rawMembers,
     familyNames,
     members,
+    persons,
     addMember,
     editMember,
     editFamilyName,

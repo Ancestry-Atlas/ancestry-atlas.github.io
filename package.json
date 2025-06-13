@@ -26,7 +26,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "api": "cd ../family_api/ && npm run start"
+    "api": "cd ../family_api/ && npm run start",
+    "nano" : "rm -r -f node_modules/nano-grid && npm install"
   },
   "eslintConfig": {
     "extends": [

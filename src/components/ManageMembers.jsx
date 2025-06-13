@@ -46,6 +46,7 @@ export default function ManageMembers({ id }) {
 
   const {
     familyNames,
+    persons,
     members,
     deleteFamilyName,
     deleteMember,
@@ -200,7 +201,7 @@ export default function ManageMembers({ id }) {
           onDelete={deleteFamilyName}
         />
         <MembersList
-          members={members}
+          persons={persons}
           onDelete={deleteMember}
         />
       </nn-fila>

@@ -137,16 +137,13 @@ ul.repeater {
   list-style: none;
   gap: 1rem;
 
-  /* &.list {
-    padding-block: 1rem;
-  } */
-
   .index,
   .preview {
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: bold;
+    text-align: center;
   }
 
   .index {
@@ -156,6 +153,18 @@ ul.repeater {
   .preview {
     background-color: #373a60;
     box-shadow: 0 3px #23264c;
+    padding: 1rem;
+  }
+
+  .controls {
+    a,
+    button,
+    nn-btn {
+      height: 100%;
+    }
+    > a {
+      display: block;
+    }
   }
 }
 
@@ -183,7 +192,7 @@ nav {
       color: #eee;
       /* font-family: Montserrat; */
       font-weight: bold;
-      
+
       &:hover {
         background-color: #3d3d60;
       }
@@ -201,7 +210,8 @@ dialog {
   flex-direction: column;
   gap: 1rem;
 
-  h1, p {
+  h1,
+  p {
     margin: 0;
   }
 
