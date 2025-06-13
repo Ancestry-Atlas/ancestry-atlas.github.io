@@ -2,7 +2,7 @@ export function getPersonWithFamilyNames({ personId, members, familyNamesMap }) 
   if (!personId || !members || !familyNamesMap) return null
 
   const visited = new Set()
-  const addedNames = new Set() // to track actual family name strings, not IDs
+  const addedNames = new Set() // Track actual family name strings (not IDs)
   const result = {
     id: personId,
     name: null,
@@ -16,9 +16,11 @@ export function getPersonWithFamilyNames({ personId, members, familyNamesMap }) 
     const person = members.find(m => m.id === id)
     if (!person) return
 
-    if (result.name === null) result.name = person.names
+    if (result.name === null) {
+      result.name = person.names
+    }
 
-    // Resolve parents first, respecting order
+    // First recursively resolve parents
     const parentIds = (person.parents || '')
       .split(',')
       .map(s => s.trim())

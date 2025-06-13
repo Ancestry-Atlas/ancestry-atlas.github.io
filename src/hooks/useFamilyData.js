@@ -151,7 +151,7 @@ export default function useFamilyData({ reset, id }) {
 
   const familyNamesMap = useMemo(() => {
     return rawFamilyNames.reduce((acc, { id, family_name }) => {
-      acc[id] = family_name
+      acc[String(id)] = family_name
       return acc
     }, {})
   }, [rawFamilyNames])
