@@ -1,51 +1,51 @@
 export default function buildFamilyTree(members) {
-  const memberMap = new Map()
-  const usedAsChild = new Set()
+  console.clear()
+  const tree = []
 
-  // Create base node map
-  for (const member of members) {
-    memberMap.set(member.id, {
-      id: member.id,
-      name: member.name,
-      parents: member.parents,
-      nickname: member.nickname,
-      children: []
-    })
-  }
+  // get couples
+  const couples = members
+    .filter(person => person?.parents !== 'Nothing')
+    .map(person => person.parents.split(','))
 
-  // Assign children
-  for (const member of members) {
-    const parents = (member.parents || '')
-      .split(',')
-      .map(p => parseInt(p.trim()))
-      .filter(p => !isNaN(p))
+  // add couples as childrens
+  members = members.map(person => {
+    const currentCouple = couples.find(couple =>
+      couple.includes(String(person.id))
+    )
+    if (currentCouple) {
+      const spouseId = currentCouple?.filter(id => id !== String(person.id))
+      let spouse = members.find(({ id }) => id === +spouseId)
 
-    // For each parent, attach the current member as their child
-    for (const parentId of parents) {
-      const parentNode = memberMap.get(parentId)
-      const childNode = memberMap.get(member.id)
+      // add childrens to the nested parent
+      const children = members.filter(member =>
+        member.parents.split(',').includes(String(spouseId))
+      )
 
-      if (parentNode && childNode) {
-        parentNode.children.push(childNode)
-        usedAsChild.add(childNode.id) // Track it
+      spouse = { ...spouse, children }
+      return {
+        ...person,
+        children: spouse,
       }
+    } else {
+      return person
     }
-  }
+  })
 
-  // Roots are members that were never added as a child
-  const roots = []
-  for (const [id, node] of memberMap.entries()) {
-    if (!usedAsChild.has(id)) {
-      roots.push(node)
+  // move node without parents to the root
+  members = members.filter(person => {
+    if (person?.parents === 'Nothing') {
+      tree.push({
+        id: person.id,
+        name: person.name,
+        nickname: person.nickname,
+        children: person.children,
+      })
+      return false
     }
-  }
+    return true
+  })
 
-  // If only one root, return it
-  if (roots.length === 1) return roots[0]
-
-  // Otherwise wrap in a container root
-  return {
-    name: 'Root',
-    children: roots
-  }
+  // console.log('couples', couples)
+  // console.log('pending', pendingMembers)
+  console.log('tree', tree)
 }
