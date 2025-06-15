@@ -11,7 +11,7 @@ export default function Repeater({
   control,
   checkLabel,
 }) {
-  const computedOptions = [{ value: null, label: 'Nothing' }, options]?.flat()
+  const computedOptions = [{ value: null, label: null }, options]?.flat()
   return (
     <>
       <ul className="repeater">

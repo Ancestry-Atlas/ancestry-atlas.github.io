@@ -47,12 +47,19 @@ export default function ManageMembers({ id }) {
   const {
     familyNames,
     persons,
-    members,
     deleteFamilyName,
     deleteMember,
     editMember,
     addMember,
   } = useFamilyData({ reset, id })
+
+  const membersWithId = persons.map(({ id, name, familyNames }) => {
+    return {
+      id,
+      value: id,
+      label: `${id} :: ${[name, familyNames[0], familyNames[1]].join(' ')}`,
+    }
+  })
 
   useEffect(() => {
     if (id) {
@@ -64,10 +71,7 @@ export default function ManageMembers({ id }) {
     <section className="edit">
       <nn-fila>
         <nn-pilar className="form-section">
-          <nn-caja
-            padding="1rem"
-            max-width="600px"
-          >
+          <nn-caja padding="1rem">
             <h1>{id ? 'Edit Member' : 'Add Member'}</h1>
             <form onSubmit={handleSubmit(addMember)}>
               <nn-desplazador>
@@ -148,7 +152,7 @@ export default function ManageMembers({ id }) {
                     check={true}
                     checkLabel="Ignore this family name"
                     namePrefix="parents"
-                    options={members}
+                    options={membersWithId}
                     control={control}
                     labelProp="full_name"
                     valueProp="id"
@@ -196,10 +200,10 @@ export default function ManageMembers({ id }) {
             </form>
           </nn-caja>
         </nn-pilar>
-        <FamilyNamesList
+        {/* <FamilyNamesList
           familyNames={familyNames}
           onDelete={deleteFamilyName}
-        />
+        /> */}
         <MembersList
           persons={persons}
           onDelete={deleteMember}

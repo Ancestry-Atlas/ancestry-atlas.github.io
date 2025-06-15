@@ -30,7 +30,7 @@ export function getPersonWithFamilyNames({
     const [p1, p2] = (person.parents || '')
       .split(',')
       .map(s => s.trim())
-      .filter(pid => pid && pid !== 'Nothing' && !isNaN(pid))
+      .filter(pid => pid && !ignore.includes(pid) && !isNaN(pid))
 
     const p1Names = p1 ? extractFamilyNames(p1) : []
     const p2Names = p2 ? extractFamilyNames(p2) : []

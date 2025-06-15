@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom'
 export default function FamilyNamesList({ familyNames, onDelete }) {
   return (
     <nn-pilar className="listing family">
-      <nn-caja
-        padding="1rem"
-        max-width="600px"
-      >
+      <nn-caja padding="1rem">
         <h2>Family Names</h2>
         <nn-desplazador>
           <ul className="repeater list">
@@ -50,9 +47,9 @@ export default function FamilyNamesList({ familyNames, onDelete }) {
             ))}
           </ul>
         </nn-desplazador>
-        <Link to="/family-names/create">
-          <nn-btn color={gColors['sunglow'].hex}>Add Family Name</nn-btn>
-        </Link>
+        <nn-btn color={gColors['sunglow'].hex}>
+          <Link to="/family-names/create">Add Family Name</Link>
+        </nn-btn>
       </nn-caja>
     </nn-pilar>
   )

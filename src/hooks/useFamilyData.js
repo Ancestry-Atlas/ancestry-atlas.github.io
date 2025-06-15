@@ -67,17 +67,38 @@ export default function useFamilyData({ reset, id } = {}) {
   //-------------------------------
 
   const addMember = async formData => {
+    const notRequired = [
+      'nickname',
+      'dob',
+      'adopted',
+      'preferred_name',
+      {
+        key: 'family_names',
+        value: formData.family_names.map(n => n.value).join(','),
+      },
+      {
+        key: 'parents',
+        value: formData.parents.map(n => n.value).join(','),
+      },
+      {
+        key: 'ignore_family_name',
+        value: formData.parents
+          .map(n => (n.ignore ? n.value : null))
+          .filter(Boolean)
+          .join(','),
+      },
+    ].reduce((acc, item) => {
+      if (typeof item === 'string') {
+        if (formData[item]) acc[item] = formData[item]
+      } else if (item?.key && item.value) {
+        acc[item.key] = item.value
+      }
+      return acc
+    }, {})
+
     const data = {
+      ...notRequired,
       names: formData.names.map(n => n.value).join(','),
-      family_names: formData.family_names.map(n => n.value).join(','),
-      preferred_name: formData.preferred_name,
-      nickname: formData.nickname,
-      adopted: formData.adopted,
-      dob: formData.dob,
-      parents: formData.parents.map(n => n.value).join(','),
-      ignore_family_name: formData.parents
-        .map(n => (n.ignore ? n.value : null))
-        .join(','),
     }
 
     let result
@@ -182,6 +203,11 @@ export default function useFamilyData({ reset, id } = {}) {
           familyNamesMap,
         })
       )
+      .sort((a, b) => {
+        const aNames = (a.familyNames || []).join(' ')
+        const bNames = (b.familyNames || []).join(' ')
+        return aNames.localeCompare(bNames)
+      })
       .filter(Boolean)
   }, [rawMembers, rawFamilyNames, familyNamesMap])
 

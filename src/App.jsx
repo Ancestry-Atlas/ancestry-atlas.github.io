@@ -6,10 +6,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import EditMembers from './members/Edit'
 import EditFamilyNames from './family-names/Edit'
 import { ModalProvider } from './contexts/ModalContext'
+import Members from './members/index'
+import FamilyNames from './family-names/index'
 
-import Table from './graph/Table'
-import Force3D from './graph/Force3D'
-import RadialClusterTree from './graph/RadialClusterTree'
+// import Force3D from './graph/Force3D'
+// import RadialClusterTree from './graph/RadialClusterTree'
 import Navbar from './components/Navbar'
 
 export default function App() {
@@ -19,17 +20,21 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route
-            path="/graph/table"
-            element={<Table />}
+            path="/members/"
+            element={<Members />}
           />
           <Route
+            path="/family_names/"
+            element={<FamilyNames />}
+          />
+          {/* <Route
             path="/graph/force-3d"
             element={<Force3D />}
           />
           <Route
             path="/graph/radial-cluster-tree"
             element={<RadialClusterTree />}
-          />
+          /> */}
           <Route
             path="/members/edit/:id"
             element={<EditMembers />}

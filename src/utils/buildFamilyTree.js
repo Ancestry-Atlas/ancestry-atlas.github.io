@@ -1,51 +1,65 @@
 export default function buildFamilyTree(members) {
   console.clear()
-  const tree = []
 
-  // get couples
   const couples = members
-    .filter(person => person?.parents !== 'Nothing')
+    .filter(person => person.parents !== 'Nothing')
     .map(person => person.parents.split(','))
 
-  // add couples as childrens
-  members = members.map(person => {
+  const visited = new Set()
+
+  function buildPersonTree(personId) {
+    if (visited.has(personId)) return null
+    visited.add(personId)
+
+    const person = members.find(m => String(m.id) === String(personId))
+    if (!person) return null
+
     const currentCouple = couples.find(couple =>
       couple.includes(String(person.id))
     )
+
+    let spouse = null
+    let children = []
+
     if (currentCouple) {
-      const spouseId = currentCouple?.filter(id => id !== String(person.id))
-      let spouse = members.find(({ id }) => id === +spouseId)
+      const spouseId = currentCouple.find(id => id !== String(person.id))
+      spouse = buildPersonTree(spouseId) // 🔁 recurse into spouse too
 
-      // add childrens to the nested parent
-      const children = members.filter(member =>
-        member.parents.split(',').includes(String(spouseId))
-      )
-
-      spouse = { ...spouse, children }
-      return {
-        ...person,
-        children: spouse,
-      }
+      // Children of this couple
+      children = members
+        .filter(child => {
+          const [p1, p2] = child.parents.split(',')
+          return (
+            [p1, p2].includes(String(person.id)) &&
+            [p1, p2].includes(spouseId)
+          )
+        })
+        .map(child => buildPersonTree(child.id))
+        .filter(Boolean)
     } else {
-      return person
+      // No spouse — find children with this person as one parent
+      children = members
+        .filter(child =>
+          child.parents.split(',').includes(String(person.id))
+        )
+        .map(child => buildPersonTree(child.id))
+        .filter(Boolean)
     }
-  })
 
-  // move node without parents to the root
-  members = members.filter(person => {
-    if (person?.parents === 'Nothing') {
-      tree.push({
-        id: person.id,
-        name: person.name,
-        nickname: person.nickname,
-        children: person.children,
-      })
-      return false
+    return {
+      id: person.id,
+      name: person.name,
+      nickname: person.nickname,
+      spouse,
+      children,
     }
-    return true
-  })
+  }
 
-  // console.log('couples', couples)
-  // console.log('pending', pendingMembers)
+  const tree = members
+    .filter(p => p.parents === 'Nothing')
+    .map(root => buildPersonTree(root.id))
+    .filter(Boolean)
+
   console.log('tree', tree)
+  return tree
 }

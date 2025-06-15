@@ -29,10 +29,7 @@ export default function ManageFamilyNames({ id }) {
     <section className="edit">
       <nn-fila>
         <nn-pilar className="form-section">
-          <nn-caja
-            padding="1rem"
-            max-width="600px"
-          >
+          <nn-caja padding="1rem">
             <h1>{id ? 'Edit' : 'Add'} Family Name</h1>
             <form onSubmit={handleSubmit(addFamilyName)}>
               <nn-desplazador>
@@ -60,10 +57,10 @@ export default function ManageFamilyNames({ id }) {
           familyNames={familyNames}
           onDelete={deleteFamilyName}
         />
-        <MembersList
+        {/* <MembersList
           persons={persons}
           onDelete={deleteMember}
-        />
+        /> */}
       </nn-fila>
     </section>
   )

@@ -103,7 +103,8 @@ form {
   }
 }
 
-section.edit {
+.listing,
+.form-section {
   nn-desplazador {
     height: calc(100vh - 205px);
     margin-bottom: 1rem;
@@ -113,7 +114,9 @@ section.edit {
   nn-btn {
     width: 100%;
   }
+}
 
+section.edit {
   > nn-fila {
     --separation: 1px;
     background-color: #3f3f5e;
@@ -121,10 +124,16 @@ section.edit {
     gap: var(--separation);
 
     > nn-pilar {
-      --nn-pilar-size: calc(100% / 3 - var(--separation));
       background-color: #202028;
       flex-grow: 1;
       flex-shrink: 1;
+
+      &:first-child {
+        --nn-pilar-size: 600px;
+      }
+      &:last-child {
+        --nn-pilar-size: auto;
+      }
     }
   }
 }

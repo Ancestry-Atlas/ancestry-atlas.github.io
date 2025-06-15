@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom'
 export default function MembersList({ persons = [], onDelete }) {
   return (
     <nn-pilar className="listing members">
-      <nn-caja
-        padding="1rem"
-        max-width="600px"
-      >
+      <nn-caja padding="1rem">
         <h2>Members</h2>
         <nn-desplazador>
           <ul className="repeater list">
@@ -50,9 +47,9 @@ export default function MembersList({ persons = [], onDelete }) {
             ))}
           </ul>
         </nn-desplazador>
-        <Link to="/members/create">
-          <nn-btn color={gColors['sunglow'].hex}>Add Family Member</nn-btn>
-        </Link>
+        <nn-btn color={gColors['sunglow'].hex}>
+          <Link to="/members/create">Add Family Member</Link>
+        </nn-btn>
       </nn-caja>
     </nn-pilar>
   )

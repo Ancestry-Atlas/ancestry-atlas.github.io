@@ -5,16 +5,10 @@ export default function Navbar() {
     <nav>
       <ul>
         <li>
-          <Link to="/graph/table">Table</Link>
+          <Link to="/members/">Members</Link>
         </li>
         <li>
-          <Link to="/graph/force-3d">Force 3D</Link>
-        </li>
-        <li>
-          <Link to="/graph/radial-cluster-tree">Radial Cluster Tree</Link>
-        </li>
-        <li>
-          <Link to="/members/create">Manage Members</Link>
+          <Link to="/family_names/">Family Names</Link>
         </li>
       </ul>
     </nav>
