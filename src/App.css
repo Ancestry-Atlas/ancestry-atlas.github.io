@@ -132,7 +132,7 @@ section.edit {
         --nn-pilar-size: 600px;
       }
       &:last-child {
-        --nn-pilar-size: auto;
+        --nn-pilar-size: calc(100% - 600px - 1px);
       }
     }
   }

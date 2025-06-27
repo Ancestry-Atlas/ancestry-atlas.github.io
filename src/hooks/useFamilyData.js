@@ -203,11 +203,11 @@ export default function useFamilyData({ reset, id } = {}) {
           familyNamesMap,
         })
       )
-      .sort((a, b) => {
-        const aNames = (a.familyNames || []).join(' ')
-        const bNames = (b.familyNames || []).join(' ')
-        return aNames.localeCompare(bNames)
-      })
+      // .sort((a, b) => {
+      //   const aNames = (a.familyNames || []).join(' ')
+      //   const bNames = (b.familyNames || []).join(' ')
+      //   return aNames.localeCompare(bNames)
+      // })
       .filter(Boolean)
   }, [rawMembers, rawFamilyNames, familyNamesMap])
 

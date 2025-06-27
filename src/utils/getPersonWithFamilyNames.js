@@ -26,16 +26,15 @@ export function getPersonWithFamilyNames({
 
     const direct = rawFamilyIds.map(fid => familyNamesMap[fid]).filter(Boolean)
 
-    // Recursively extract parent family names
     const [p1, p2] = (person.parents || '')
       .split(',')
-      .map(s => s.trim())
-      .filter(pid => pid && !ignore.includes(pid) && !isNaN(pid))
+      .map(pid => pid.trim())
+      // .filter(pid => pid && !ignore.includes(pid) && !isNaN(pid))
 
     const p1Names = p1 ? extractFamilyNames(p1) : []
     const p2Names = p2 ? extractFamilyNames(p2) : []
 
-    return interleave(p1Names, p2Names).concat(direct)
+    return [...interleave(p1Names, p2Names), ...direct]
   }
 
   function interleave(a, b) {

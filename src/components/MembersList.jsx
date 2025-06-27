@@ -21,7 +21,7 @@ export default function MembersList({ persons = [], onDelete }) {
                     size="100% - 35px * 3"
                     className="preview"
                   >
-                    {[member.name, member.familyNames]?.flat().join(' ')}
+                    {[member.nickname && `(${member.nickname})`, member.name, member.familyNames]?.flat().join(' ')}
                   </nn-pilar>
                   <nn-pilar
                     size="35px"
